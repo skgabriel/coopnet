@@ -22,14 +22,18 @@ The dataset contains a json file for each paper intro/abstract pair with the cat
 Setting up data: 
 
 mkdir data 
+
 cd data 
+
 Download data from Google Drive 
+
 for train, test and val splits: tar -xvf {split}.tar
 
 
 Training Generator: 
 
 Example w/ Bio summarization model: python train.py --data_dir ../data --dataset bio 
+
 Example w/ CS summarization model: python train.py --data_dir ../data --dataset cs 
 
 Decoding from Generator:
