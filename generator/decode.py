@@ -19,13 +19,11 @@ if __name__ == '__main__':
     parser.add_argument('--load_epoch',type=str,default='12')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--dataset',type=str,default='bio') #specify dataset name
-    parser.add_argument('--load_disc',type=bool,default=False)
     parser.add_argument('--data_dir',type=str,default='../data')
     parser.add_argument('--n_batch',type=int,default=1)
     parser.add_argument('--topk',type=int,default=3)
     parser.add_argument('--num_cands',type=int,default=10)
     parser.add_argument('--split',type=str,default='test')
-    parser.add_argument('--decoding',type=str,default='topk')
 args = parser.parse_args()
 print(args)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
