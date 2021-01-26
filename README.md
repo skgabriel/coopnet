@@ -13,4 +13,21 @@ The repo contains
 
 ## Dataset Description 
 
+See [here](https://arxiv.org/category_taxonomy) for a list of ArXiv paper categories
+
+The dataset contains a json file for each paper intro/abstract pair with the category, article split into sentences, abstract split into sentences, and an id 
+
 ## Instructions 
+
+Setting up data: 
+
+mkdir data 
+cd data 
+Download data from Google Drive 
+for train, test and val splits: tar -xvf {split}.tar
+
+
+Training Generator: 
+
+Example w/ Bio summarization model: python train.py --data_dir ../data --dataset bio 
+Example w/ CS summarization model: python train.py --data_dir ../data --dataset cs 
