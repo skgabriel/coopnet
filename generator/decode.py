@@ -20,15 +20,12 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--dataset',type=str,default='bio') #specify dataset name
     parser.add_argument('--load_disc',type=bool,default=False)
-    parser.add_argument('--save_folder',type=str,default='')
-    parser.add_argument('--data_dir',type=str,default='/net/nfs2.corp/ca-data/')
+    parser.add_argument('--data_dir',type=str,default='../data')
     parser.add_argument('--n_batch',type=int,default=1)
     parser.add_argument('--topk',type=int,default=3)
     parser.add_argument('--num_cands',type=int,default=10)
-    parser.add_argument('--split',type=str,default='val') #test or val?
+    parser.add_argument('--split',type=str,default='test')
     parser.add_argument('--decoding',type=str,default='topk')
-    parser.add_argument('--s_split',type=int,default=0)
-    parser.add_argument('--e_split',type=int,default=300)
 args = parser.parse_args()
 print(args)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -41,24 +38,19 @@ n_ctx = 1024
 
 def transform_arxiv(X1,X2):
     n_batch = len(X1)
-    delimiter = [encoder['<|TL;DR|>']] #[encoder['ĠTL']] + [encoder[';']] + [encoder['DR']]
-    end_token = [encoder['<|endoftext|>']] #[encoder['<']] + [encoder['end']] + [encoder['>']]
+    delimiter = [encoder['<|TL;DR|>']]
+    end_token = [encoder['<|endoftext|>']]
     xmb = np.zeros((n_batch, n_ctx), dtype=np.int32)
     mmb = np.zeros((n_batch, n_ctx), dtype=np.float32)
-    max_len = 256-1 #512-1  
     for i, (x1,x2), in enumerate(zip(X1,X2)):
-        new_x1 = x1[:800] #[:400]
-        new_x2 = x2[:200] #[:(n_ctx-400-6)]
+        new_x1 = x1[:800]
+        new_x2 = x2[:200]
         x12 = new_x1 + delimiter
-        x13 = new_x2 + end_token #+ [clf_token]
-        try:
-            xmb[i,:len(x12)] = x12
-            xmb[i,len(x12):len(x12)+len(x13)] = x13 
-            mmb[i,:len(x12)] = 1
-            mmb[i,:len(x12)+len(x13)] = 1
-        except:
-            import ipdb; ipdb.set_trace()
-#    import ipdb; ipdb.set_trace()
+        x13 = new_x2 + end_token
+        xmb[i,:len(x12)] = x12
+        xmb[i,len(x12):len(x12)+len(x13)] = x13 
+        mmb[i,:len(x12)] = 1
+        mmb[i,:len(x12)+len(x13)] = 1
     return xmb, mmb
 
 device = torch.device(device)
@@ -73,24 +65,13 @@ text_encoder.decoder = decoder
 n_vocab = len(text_encoder.encoder)
 
 best_model = 'best_params_' + args.load_epoch
-
-if args.dataset == 'bio':
-   unprocessed_p = 'all_bio.pkl' 
-   model_path = '/net/nfs2.corp/ca-data/factsumm/bio_gpt2/model/' + best_model
-
-if args.dataset == 'cs':
-   unprocessed_p = 'data_dump_comsci.pkl'
-   model_path = '/net/nfs2.corp/ca-data/factsumm/cs_gpt2/model/' + best_model
-
-if args.dataset == 'aan':
-   unprocessed_p = 'all_aan.pkl'
-   model_path = '/net/nfs2.corp/ca-data/factsumm/aan_gpt2/model/' + best_model
-
-if args.dataset != 'aan':
-   unprocessed_p = os.path.join(args.data_dir, 'gpt2_' + unprocessed_p)
-else:
-   unprocessed_p = os.path.join(args.data_dir, unprocessed_p)
+unprocessed_p = os.path.join(args.data_dir, 'all_' + args.dataset + '.pkl')
+model_path = './' + args.model_dir + '/' + 'model/' + best_model
 print('loading transformed data')
+if args.dataset == 'cs':
+   not_cat = 'physics'
+else:
+   not_cat = None
 
 try:
    teX, teM, te_ids =  pickle.load(open(os.path.join(args.data_dir, args.split + '_gpt2_' + args.dataset + '.pkl'),'rb'))
@@ -104,7 +85,7 @@ except:
    except:
         ((trX1, trX2, tr_ids),
          (vaX1, vaX2, va_ids),
-         (teX1, teX2, te_ids)) = encode_dataset2(*arxiv2(args.data_dir, use_cat=True, cat=args.dataset,not_cat='physics'),encoder=text_encoder)
+         (teX1, teX2, te_ids)) = encode_dataset2(*arxiv2(args.data_dir, use_cat=True, cat=args.dataset,not_cat=not_cat),encoder=text_encoder)
         pickle.dump([(trX1,trX2,tr_ids), (vaX1,vaX2,va_ids), (teX1, teX2,te_ids)], open(unprocessed_p,'wb'))
    teX, teM = transform_arxiv(teX1, teX2)
    pickle.dump((teX,teM, te_ids), open(os.path.join(args.data_dir, args.split + '_gpt2_' + args.dataset + '.pkl'),'wb'))
@@ -116,7 +97,7 @@ n_batch_test = args.n_batch
 gen_len = 150
 
 
-def topk(model, XMB,i, n=1,k=args.topk, mem=None,use_pointer=None,use_scores=None):
+def topk(model, XMB,i, n=1,k=args.topk):
     import copy
     probs = [[] for  j in range(n)]
     gens = []
@@ -166,22 +147,13 @@ def clean_gen(gen):
 
 n_updates = 0 
 output_folder = args.dataset + '_gpt2_gen' + '/' + args.split
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
 for xmb, id in iter_data(teX,te_ids,n_batch=n_batch_test,truncate=True,verbose=True):
     if args.dataset == 'aan':
        id = id[0]
        id = [decoder[t] for t in id]
        id = ''.join(id)
-#    if str(id) + '.txt' not in os.listdir('./' + output_folder):
-#       print(str(id) + '.txt')
-#    continue
-#       continue
-#    else:
-#       print(str(id) + '.txt')
-    if n_updates < args.s_split:
-       n_updates += 1
-       continue
-    if n_updates == args.e_split:
-       break
     if args.dataset != 'aan':
        id = id[0]
     gen_file = open(os.path.join('./' + output_folder, str(id) + '.txt'),'w')
