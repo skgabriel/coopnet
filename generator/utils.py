@@ -8,19 +8,6 @@ import numpy as np
 # from tensorflow.python.framework import function
 from tqdm import tqdm
 
-def encode_dataset(*splits, encoder):
-    #import ipdb; ipdb.set_trace()
-    encoded_splits = []
-    for split in splits:
-        fields = []	
-        for field in split:
-            if isinstance(field[0], str):
-                field = encoder.encode(field)
-            fields.append(field)
-        encoded_splits.append(fields)
-    return encoded_splits
-
-
 def encode_dataset2(*splits, encoder):
     #import ipdb; ipdb.set_trace()
     encoded_splits = []
@@ -29,18 +16,6 @@ def encode_dataset2(*splits, encoder):
         for field in split:
             if isinstance(field[0], str):
                 field = [encoder.encode(x) for x in field]
-            fields.append(field)
-        encoded_splits.append(fields)
-    return encoded_splits
-
-def encode_dataset_bert(*splits, encoder):
-    #import ipdb; ipdb.set_trace()
-    encoded_splits = []
-    for split in splits:
-        fields = []
-        for field in split:
-            if isinstance(field[0], str):
-                field = [encoder.tokenize(x) for x in field]
             fields.append(field)
         encoded_splits.append(fields)
     return encoded_splits
