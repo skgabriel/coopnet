@@ -1,7 +1,7 @@
 numpy
 torch
 sklearn 
-transformers
+transformers==2.8.0
 ftfy
 spacy 
 tensorboard_logger

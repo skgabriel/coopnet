@@ -16,6 +16,7 @@ from sklearn.utils import shuffle
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--model_dir',type=str,default='./model')
     parser.add_argument('--load_epoch',type=str,default='12')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--dataset',type=str,default='bio') #specify dataset name
@@ -64,7 +65,7 @@ n_vocab = len(text_encoder.encoder)
 
 best_model = 'best_params_' + args.load_epoch
 unprocessed_p = os.path.join(args.data_dir, 'all_' + args.dataset + '.pkl')
-model_path = './' + args.model_dir + '/' + 'model/' + best_model
+model_path = os.path.join(args.model_dir, 'model', best_model)
 print('loading transformed data')
 if args.dataset == 'cs':
    not_cat = 'physics'
@@ -97,7 +98,6 @@ gen_len = 150
 
 def topk(model, XMB,i, n=1,k=args.topk):
     import copy
-    probs = [[] for  j in range(n)]
     gens = []
     XMB_intro = torch.stack([copy.deepcopy(XMB[0]) for j in range(n)],dim=0)
     seq_done = [False for j in range(n)]
@@ -108,15 +108,13 @@ def topk(model, XMB,i, n=1,k=args.topk):
             values, indices  = logits[j].unsqueeze(0).sort(descending=True)
             next_indices = indices[:, :k].gather(-1, torch.multinomial(values[:, :k], 1))
             XMB_intro[j,i+1+step] = next_indices.view(-1).long() 
-            probs[j].append(np.log(float(values[:,int(XMB_intro[j,i+1+step])])))
             if encoder['<|endoftext|>'] in XMB_intro[j]:
                seq_done[j] = True
         if False not in seq_done:
            break
     for j in range(XMB_intro.size(0)):
         gens.append(XMB_intro[j,i+1:].tolist())
-    probs = [np.mean(p) for p in probs]
-    return gens, probs
+    return gens
 
 
 model = GPT2LMHeadModel.from_pretrained('gpt2-medium')
@@ -148,12 +146,9 @@ output_folder = args.dataset + '_gpt2_gen' + '/' + args.split
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 for xmb, id in iter_data(teX,te_ids,n_batch=n_batch_test,truncate=True,verbose=True):
-    if args.dataset == 'aan':
-       id = id[0]
-       id = [decoder[t] for t in id]
-       id = ''.join(id)
-    if args.dataset != 'aan':
-       id = id[0]
+    id = id[0]
+    id = [decoder[t] for t in id]
+    id = ''.join(id)
     gen_file = open(os.path.join('./' + output_folder, str(id) + '.txt'),'w')
     i_1 = 0
     while xmb[0,i_1] != encoder['<|TL;DR|>']:
@@ -163,10 +158,10 @@ for xmb, id in iter_data(teX,te_ids,n_batch=n_batch_test,truncate=True,verbose=T
     new_xmb[0,:i_1+1] = xmb 
     XMB_intro = torch.Tensor(new_xmb).long().to(device)
     with torch.no_grad():
-          gens, probs = topk(model, XMB_intro, i=i_1, k=args.topk, n=args.num_cands)
+          gens = topk(model, XMB_intro, i=i_1, k=args.topk, n=args.num_cands)
     gens = [clean_gen(g) for g in gens]
     for i in range(len(gens)):
-        gen_file.write(gens[i] + '\n' + 'prob: ' + str(probs[i]) + '\n')
+        gen_file.write(gens[i] + '\n')
     n_updates += 1
 
 
