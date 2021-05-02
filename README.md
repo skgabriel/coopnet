@@ -60,6 +60,18 @@ python assess.py (choose best for each discriminator)
 
 -----------------------------------------------------------
 
+```
+@inproceedings{Gabriel2021DiscourseUA,
+  title={Discourse Understanding and Factual Consistency in Abstractive Summarization},
+  author={Saadia Gabriel and Antoine Bosselut and Jeff Da and Ari Holtzman and Jan Buys and A. Çelikyilmaz and Yejin Choi},
+  booktitle={EACL},
+  year={2021}
+}
+
+```
+
+-----------------------------------------------------------
+
 Code mainly adapted from HuggingFace Transformers (https://huggingface.co/transformers/), with additional acknowledgements given in the respective subdirectories 
 
 
