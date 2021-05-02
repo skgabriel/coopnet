@@ -8,8 +8,8 @@ model = 'gpt2' #lstm #'gpt2'
 key_ = '_full'
 if model == 'lstm':
    key_ = '_lstm'
-gen_folder = '/media/seagate2/final_eval_gens/' + model + '/' + subset + '/'
-source_folder = '/media/seagate2/final_eval_gens/' + subset + '_gens' + key_
+gen_folder = './final_eval_gens/' + model + '/' + subset + '/'
+source_folder = './final_eval_gens/' + subset + '_gens' + key_
 
 if model == 'gpt2':
    file = [json.loads(l) for l in open('results_' + subset + '.json').readlines()] #[ast.literal_eval(l.strip().replace("'", '"')) for l in open('results_' + subset + '.json').readlines()]
