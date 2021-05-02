@@ -11,9 +11,6 @@ if __name__ == '__main__':
     parser.add_argument('--aan_model_path',type=str,default='./aan_model/model/best_params') 
     parser.add_argument('--bio_model_path',type=str,default='./bio_model/model/best_params')
     parser.add_argument('--gen_model_path',type=str,default='./gen_model/aan/model/best_params')
-    parser.add_argument('--topk',type=int,default=3)
-    parser.add_argument('--num_cands',type=int,default=10)
-    parser.add_argument('--split',type=str,default='test')
 args = parser.parse_args()
 print(args)
 
