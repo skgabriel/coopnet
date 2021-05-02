@@ -58,5 +58,8 @@ python disc_selection.py (rank based on various discriminators)
 
 python assess.py (choose best for each discriminator) 
 
+-----------------------------------------------------------
+
+Code mainly adapted from HuggingFace Transformers (https://huggingface.co/transformers/), with additional acknowledgements given in the respective subdirectories 
 
 
