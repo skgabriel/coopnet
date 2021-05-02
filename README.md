@@ -50,3 +50,12 @@ The training script for the adjacency model is [here](https://github.com/skgabri
 
 The token classification model for the factuality discriminator is [here](https://github.com/skgabriel/coopnet/tree/main/discriminators/factuality)
 
+Cooperative Reranking:
+
+Example: 
+
+python disc_selection.py (rank based on various discriminators) 
+python assess.py (choose best for each discriminator) 
+
+
+
