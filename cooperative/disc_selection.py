@@ -78,8 +78,8 @@ model.eval()
 def disc_score(abstract, model):
     score_ = []
     for sent in range(len(abstract)-1):
-        sent1 = abstract[sent][:200]
-        sent2 = abstract[sent+1][:200]
+        sent1 = ' '.join(abstract[sent].split(' ')[:200])
+        sent2 = ' '.join(abstract[sent+1].split(' ')[:200])
         input_ = torch.LongTensor(disc_encoder.encode(sent1) + disc_encoder.encode(sent2)[1:]).unsqueeze(0).to(device)
         output_ = np.log(F.softmax(model(input_)[0]).tolist()[0][1])
         score_.append(output_)
@@ -187,7 +187,7 @@ def model_score(abstract, source, model):
     return loss
 
 #BACKGROUND, METHOD, OBJECTIVE, RESULT, OTHER
-#results = open('results_' + subset + '.json','w')
+results = open('results_' + subset + '.json','w')
 already = []
 for f in files:
     id = f.split('_')[-1].replace('.json','')
@@ -207,5 +207,4 @@ for f in files:
     order = [ordering(disc_labels[i]) for i in range(len(cands))]
     f_score = [factual(data['tokens'],data['scores'],source) for data in cands]
     entry = {"id":id,"files":names,"prob":prob,"adj":score,"cov":coverage,"order":order,"fact":f_score}
-    import pdb; pdb.set_trace()
-    #results.write(str(json.dumps(entry)) + '\n')
+    results.write(str(json.dumps(entry)) + '\n')
