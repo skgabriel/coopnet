@@ -42,4 +42,11 @@ Example: python decode.py --load_epoch 12 --dataset bio --data_dir ../data --top
 
 Generations for each example are located in the file at ./generator/{dataset}_gpt2_gen/{split}/{split}-{id}.txt and the file contains a list of generated candidate summaries with every line of the file containing a different candidate summary  
 
-The sequence prediction model 
+Discriminator Models:
+
+The sequence prediction model (Cohan et al., 2019) for predicting abstract discourse role tags can be found with instructions and requirements [here](https://github.com/skgabriel/coopnet/tree/main/discriminators/seq_tagging)
+
+The training script for the adjacency model is [here](https://github.com/skgabriel/coopnet/tree/main/discriminators/adj) 
+
+The token classification model for the factuality discriminator is [here](https://github.com/skgabriel/coopnet/tree/main/discriminators/factuality)
+
