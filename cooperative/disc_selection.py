@@ -16,15 +16,17 @@ torch.manual_seed(0)
 torch.cuda.manual_seed_all(0)
 
 stopwords = [l.strip() for l in open('stopwords.txt').readlines()]
-subset = 'aan' #bio #cs
+
+#specify dataset subset 
+subset = 'aan'
 
 id_key = 'id'
 if subset == 'aan':
    id_key = '_file_id'
 
 model = 'full' #orig #full #lstm 
-gen_folder = '/media/seagate2/final_eval_gens/' + subset + '_gens'
-source_file = [clean_json(l) for l in open('/media/seagate2/cohan_data/test_' + subset + '.txt').readlines()]
+gen_folder = './final_eval_gens/' + subset + '_gens'
+source_file = [clean_json(l) for l in open('./cohan_data/test_' + subset + '.txt').readlines()]
 source_file = dict([(d[id_key].replace('test-',''),d['article']) for d in source_file])
 
 
