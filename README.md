@@ -58,7 +58,7 @@ Source data formatted for reranking can be found in the Google drive under "eval
 
 Example: 
 
-python disc_selection.py (rank based on various discriminators) 
+python disc_selection.py --gen_folder ./gens --source_folder ./source_data --gen_model_path ./gen_model/model/best_params --aan_model_path ./aan_model/model/best_params --bio_model_path ./bio_model/model/best_params (rank based on various discriminators) 
 
 python assess.py (choose best for each discriminator) 
 
@@ -77,7 +77,7 @@ Please cite our work:
 
 -----------------------------------------------------------
 
-Code mainly adapted from HuggingFace Transformers (https://huggingface.co/transformers/), with additional acknowledgements given in the respective subdirectories 
+Code mainly adapted from HuggingFace Transformers (https://huggingface.co/transformers/), with additional acknowledgements given in the respective subdirectories.
 
 Contact skgabrie@cs.washington.edu with questions or make a new issue. 
 
