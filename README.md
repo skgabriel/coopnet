@@ -64,6 +64,8 @@ python assess.py (choose best for each discriminator)
 
 -----------------------------------------------------------
 
+Please cite our work:
+
 ```
 @inproceedings{Gabriel2021DiscourseUA,
   title={Discourse Understanding and Factual Consistency in Abstractive Summarization},
@@ -77,4 +79,5 @@ python assess.py (choose best for each discriminator)
 
 Code mainly adapted from HuggingFace Transformers (https://huggingface.co/transformers/), with additional acknowledgements given in the respective subdirectories 
 
+Contact skgabrie@cs.washington.edu with questions or make a new issue. 
 
