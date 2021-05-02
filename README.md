@@ -55,6 +55,7 @@ Cooperative Reranking:
 Example: 
 
 python disc_selection.py (rank based on various discriminators) 
+
 python assess.py (choose best for each discriminator) 
 
 
