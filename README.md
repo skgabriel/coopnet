@@ -41,3 +41,5 @@ Decoding from Generator:
 Example: python decode.py --load_epoch 12 --dataset bio --data_dir ../data --topk 3 --num_cands 30 --split test --model_dir ./model
 
 Generations for each example are located in the file at ./generator/{dataset}_gpt2_gen/{split}/{split}-{id}.txt and the file contains a list of generated candidate summaries with every line of the file containing a different candidate summary  
+
+The sequence prediction model 
