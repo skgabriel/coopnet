@@ -67,7 +67,6 @@ python assess.py (choose best for each discriminator)
   booktitle={EACL},
   year={2021}
 }
-
 ```
 
 -----------------------------------------------------------
