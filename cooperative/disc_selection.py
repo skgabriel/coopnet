@@ -7,6 +7,20 @@ import numpy as np
 import json
 import ast
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--subset',type=str,default='aan')
+    parser.add_argument('--gen_folder',type=str,default='./gens')
+    parser.add_argument('--source_folder', type=str, default='./sources')
+    parser.add_argument('--aan_model_path',type=str,default='./aan_model/model/best_params') 
+    parser.add_argument('--bio_model_path',type=str,default='./bio_model/model/best_params')
+    parser.add_argument('--gen_model_path',type=str,default='./gen_model/aan/model/best_params')
+    parser.add_argument('--topk',type=int,default=3)
+    parser.add_argument('--num_cands',type=int,default=10)
+    parser.add_argument('--split',type=str,default='test')
+args = parser.parse_args()
+print(args)
+
 def clean_json(s):
     s = ast.literal_eval(s)
     return s
@@ -18,24 +32,15 @@ torch.cuda.manual_seed_all(0)
 stopwords = [l.strip() for l in open('stopwords.txt').readlines()]
 
 #specify dataset subset 
-subset = 'aan'
+subset = args.subset
 
 id_key = 'id'
 if subset == 'aan':
    id_key = '_file_id'
 
-model = 'full' #orig #full #lstm 
-gen_folder = './final_eval_gens/' + subset + '_gens'
-source_file = [clean_json(l) for l in open('./cohan_data/test_' + subset + '.txt').readlines()]
+gen_folder = args.gen_folder
+source_file = [clean_json(l) for l in open(args.source_folder + '/' + 'test_' + subset + '.txt').readlines()]
 source_file = dict([(d[id_key].replace('test-',''),d['article']) for d in source_file])
-
-
-if model == 'org':
-   gen_folder += '_org'
-elif model == 'lstm':
-   gen_folder += '_lstm'
-else:
-   gen_folder += '_full'
 
 all_files = [f for f in os.listdir(gen_folder)]
 files = [f for f in os.listdir(gen_folder) if f.split('_')[-2] == '0']
@@ -46,9 +51,9 @@ dh_model = BertForNextSentencePrediction.from_pretrained('bert-base-uncased')
 dh_model.bert = AutoModel.from_pretrained('allenai/scibert_scivocab_cased')
 dh_model = dh_model.to(device)
 if subset == 'aan' or subset == 'cs':
-   disc_path = 'aan_model/model/best_params_1_0.8604651162790697_0.8525345622119815_0.8564814814814814_0.8680851063829788' 
+   disc_path = args.aan_model_path
 else:
-   disc_path = 'bio_model/model/best_params_1_0.9029850746268657_0.9343629343629344_0.918406072106262_0.9232142857142858' 
+   disc_path = args.bio_model_path
 dh_model.load_state_dict(torch.load(disc_path))
 dh_model.eval()
 disc_encoder = AutoTokenizer.from_pretrained('allenai/scibert_scivocab_cased')
@@ -63,7 +68,7 @@ text_encoder.encoder = encoder
 text_encoder.decoder = decoder
 n_vocab =  len(text_encoder.encoder)
 
-model_path = '/media/seagate2/summarization_data/' + subset + '_gpt2/model/best_params_12'
+model_path = args.gen_model_path
 model = GPT2LMHeadModel.from_pretrained('gpt2-medium')
 model.resize_token_embeddings(n_vocab)
 model = model.to(device)
