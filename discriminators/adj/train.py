@@ -27,7 +27,6 @@ def transform_ab(X1,X2):
 def iter_apply(Xs, Ms, Ys):
     logits = []
     losses = []
-    
     pred = []
     gold = []
     with torch.no_grad():
@@ -44,7 +43,7 @@ def iter_apply(Xs, Ms, Ys):
             pred.extend(scores)
             gold.extend(YMB)             
             losses.append(float(loss))
-    precision = precision_score(gold, pred) #precision_recall_fscore_support(gold,pred, average='weighted')
+    precision = precision_score(gold, pred)
     recall = recall_score(gold, pred)
     f1 = f1_score(gold,pred)
     acc = np.mean([gold[i] == pred[i] for i in range(len(pred))])
@@ -72,7 +71,6 @@ def log(save_dir, desc,iter=0,save=''):
 def run_epoch(iter):
     losses = []
     i = 0
-    acc = []
     dh_model.zero_grad()
     num_train_optimization_steps = int(len(trX) / float(args.n_batch) / 8.0 * args.n_iter)
     pred = []
@@ -90,7 +88,6 @@ def run_epoch(iter):
         YMB = YMB.tolist()
         pred.extend(scores)
         gold.extend(YMB)    
-        #loss = loss_function(scores.view(-1,2),YMB.view(-1))
         loss = loss / 8.0
         losses.append(float(loss.item()))
         loss.backward()
@@ -101,19 +98,14 @@ def run_epoch(iter):
                param_group['lr'] = lr_this_step
            model_opt.step()
            model_opt.zero_grad()
-        #loss.backward()
-        #model_opt.step()
-        #model_opt.zero_grad()
         n_updates += 1
-        if (n_updates + 1) % 10000 == 0:
-           print(acc)
         if (n_updates + 1) % 10000 == 0:
            log(save_dir, desc,iter,save='_'+str(n_updates))
 
         log_value('batch_train_loss',loss,n_updates)
         log_value('mean_train_loss',np.mean(losses),n_updates)
         log_value('total_train_loss',np.sum(losses),n_updates)
-    precision = precision_score(gold, pred) #precision_recall_fscore_support(gold,pred, average='weighted')
+    precision = precision_score(gold, pred)
     recall = recall_score(gold, pred)
     f1 = f1_score(gold,pred)
     acc = np.mean([gold[i] == pred[i] for i in range(len(pred))])
