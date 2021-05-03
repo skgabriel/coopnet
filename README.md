@@ -52,7 +52,7 @@ The token classification model for the factuality discriminator is [here](https:
 
 Cooperative Reranking:
 
-All the outputs from discriminator models should be combined into json files of the format {split}\_gen\_{candidate num 1}\_{candidate num 2}\_{file_id}.json with the keys "labels" (from the discourse role model), "sentences", "tokens" and "scores" (from the token classification model). An example is given in the small_data folder. 
+All the outputs from discriminator models should be combined into json files of the format {split}\_gen\_{candidate index}\_{file_id}.json with the keys "labels" (from the discourse role model), "sentences", "tokens" and "scores" (from the token classification model). An example is given in the small_data folder. 
 
 Source data formatted for reranking can be found in the Google drive under "evaluation_formatted_data." 
 
