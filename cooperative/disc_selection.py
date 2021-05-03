@@ -76,9 +76,9 @@ model.eval()
 def disc_score(abstract, model):
     score_ = []
     for sent in range(len(abstract)-1):
-        sent1 = ' '.join(abstract[sent].split(' ')[:200])
-        sent2 = ' '.join(abstract[sent+1].split(' ')[:200])
-        input_ = torch.LongTensor(disc_encoder.encode(sent1) + disc_encoder.encode(sent2)[1:]).unsqueeze(0).to(device)
+        sent1 = abstract[sent]
+        sent2 = abstract[sent+1]
+        input_ = torch.LongTensor(disc_encoder.encode(sent1)[:200] + disc_encoder.encode(sent2)[1:201]).unsqueeze(0).to(device)
         output_ = np.log(F.softmax(model(input_)[0]).tolist()[0][1])
         score_.append(output_)
     return np.mean(score_)
@@ -192,10 +192,10 @@ for f in files:
     if id in already:
        continue
     already.append(id)
-    names = [f for f in all_files if f.split('_')[-1].replace('.json','') == id]
+    names = [f for f in all_files if f.split('_')[-1].replace('.json','') == id][:10]
     cands = [json.load(open(gen_folder + '/' + f)) for f in names]
     source = source_file[id]
-    if source == list:
+    if type(source) == list:
        source = ' '.join(source)
     disc_labels = [data['labels'] for data in cands]
     abstract = [data['sentences'] for data in cands]
