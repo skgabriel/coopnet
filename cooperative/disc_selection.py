@@ -192,7 +192,7 @@ for f in files:
     if id in already:
        continue
     already.append(id)
-    names = [f for f in all_files if f.split('_')[-1].replace('.json','') == id][:10]
+    names = [f for f in all_files if f.split('_')[-1].replace('.json','') == id]
     cands = [json.load(open(gen_folder + '/' + f)) for f in names]
     source = source_file[id]
     if type(source) == list:
