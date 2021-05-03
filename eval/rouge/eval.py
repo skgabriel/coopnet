@@ -5,9 +5,6 @@ from os.path import join, exists
 import argparse
 from evaluate import eval_rouge
 
-dec_dir = args.decode_dir
-ref_dir = args.ref_dir
-
 def main(dec_dir, ref_dir):
     dec_pattern = r'test-(\d+).txt'
     ref_pattern = 'test-#ID#.txt'
@@ -26,4 +23,6 @@ if __name__ == '__main__':
     parser.add_argument('--ref_dir', action='store', required=True,
                         help='directory of reference summaries')
     args = parser.parse_args()
+    dec_dir = args.decode_dir
+    ref_dir = args.ref_dir
     main(dec_dir, ref_dir)
