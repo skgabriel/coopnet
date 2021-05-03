@@ -7,11 +7,8 @@ from operator import add
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--subset',type=str,default='aan')
-    parser.add_argument('--gen_folder',type=str,default='./gens')
-    parser.add_argument('--source_folder', type=str, default='./sources')
-    parser.add_argument('--aan_model_path',type=str,default='./aan_model/model/best_params') 
-    parser.add_argument('--bio_model_path',type=str,default='./bio_model/model/best_params')
-    parser.add_argument('--gen_model_path',type=str,default='./gen_model/aan/model/best_params')
+    parser.add_argument('--gen_folder',type=str,default='./gens/')
+    parser.add_argument('--source_folder', type=str, default='./gens')
 args = parser.parse_args()
 print(args)
 
@@ -22,9 +19,7 @@ source_folder = args.source_folder
 file = [json.loads(l) for l in open('results_' + subset + '.json').readlines()]
 
 delta = .5
-folders = ['org','adj','cov','order']
-if model == 'gpt2':
-   folders.append('fact')
+folders = ['org','adj','cov','order','fact']
 for f in file:
     prob_a = np.argmax(f['prob'])
     if f['fact'] == 0:
@@ -38,8 +33,7 @@ for f in file:
     f_adj = f['files'][adj_a]
     f_cov = f['files'][cov_a]
     f_order = f['files'][order_a]
-    retrieved = [f_prob,f_adj,f_cov,f_order]
-    retrieved.append(f_fact)
+    retrieved = [f_prob,f_adj,f_cov,f_order,f_fact]
     for r in range(len(retrieved)):
         summ = json.load(open(source_folder + '/' + retrieved[r]))
         id = f['id']
