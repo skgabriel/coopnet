@@ -58,7 +58,7 @@ Source data formatted for reranking can be found in the Google drive under "eval
 
 Example: 
 
-python disc_selection.py --gen_folder ./gens --source_folder ./source_data --gen_model_path ./gen_model/model/best_params --aan_model_path ./aan_model/model/best_params --bio_model_path ./bio_model/model/best_params (rank based on various discriminators) 
+python disc_selection.py --subset aan --gen_folder ./gens --source_folder ./source_data --gen_model_path ./gen_model/model/best_params --aan_model_path ./aan_model/model/best_params --bio_model_path ./bio_model/model/best_params (rank based on various discriminators) 
 
 The output will be a json file containing scores for the original model ("prob"), the adjacency model ("adj"), the coverage model ("cov"), the order model ("order") and the fact model ("fact") for each candidate summary.
 
