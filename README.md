@@ -7,7 +7,7 @@ Discourse Understanding and Factual Consistency in Abstractive Summarization. Sa
 The repo contains 
 
 1. A cooperative generator-discriminator summarization framework for generating abstracts of scientific papers with various discourse and factuality objectives; and 
-2. A large-scale dataset of ArXiv scientific papers covering a broad range of domains 
+2. A large-scale dataset of ArXiv scientific papers covering a broad range of domains. 
 
 [Dataset](https://drive.google.com/drive/u/0/folders/1VEBEuH3sJKZErt_9UF6bIrgag_ws6GXC) (Currently contains all ArXiv examples for the intro -> abstract task)
 
@@ -15,7 +15,7 @@ The repo contains
 
 See [here](https://arxiv.org/category_taxonomy) for a list of ArXiv paper categories
 
-The dataset contains a json file for each paper intro/abstract pair with the category, article split into sentences, abstract split into sentences, and an id 
+The dataset contains a json file for each paper intro/abstract pair with the category, article split into sentences, abstract split into sentences, and an id.
 
 ## Instructions 
 
@@ -65,9 +65,6 @@ The output will be a json file containing scores for the original model ("prob")
 python assess.py (choose best for each discriminator) 
 
 -----------------------------------------------------------
-
-Please cite our work:
-
 ```
 @inproceedings{Gabriel2021DiscourseUA,
   title={Discourse Understanding and Factual Consistency in Abstractive Summarization},
@@ -76,7 +73,6 @@ Please cite our work:
   year={2021}
 }
 ```
-
 -----------------------------------------------------------
 
 Code mainly adapted from HuggingFace Transformers (https://huggingface.co/transformers/), with additional acknowledgements given in the respective subdirectories.
