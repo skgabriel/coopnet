@@ -62,7 +62,7 @@ python disc_selection.py --subset aan --gen_folder ./gens --source_folder ./sour
 
 The output will be a json file containing scores for the original model ("prob"), the adjacency model ("adj"), the coverage model ("cov"), the order model ("order") and the fact model ("fact") for each candidate summary.
 
-python assess.py (choose best for each discriminator) 
+python assess.py --subset aan --gen_folder ./gens/ --source_folder ./gens (choose best for each discriminator) 
 
 -----------------------------------------------------------
 ```
