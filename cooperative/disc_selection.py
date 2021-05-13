@@ -23,6 +23,10 @@ def clean_json(s):
     s = ast.literal_eval(s)
     return s
 
+def truncation(s,tokenizer):
+    if tokenizer.decode(s[-1]) != '[SEP]':
+       return s + tokenizer.encode('[SEP]')
+
 np.random.seed(0)
 torch.manual_seed(0)
 torch.cuda.manual_seed_all(0)
@@ -78,7 +82,7 @@ def disc_score(abstract, model):
     for sent in range(len(abstract)-1):
         sent1 = abstract[sent]
         sent2 = abstract[sent+1]
-        input_ = torch.LongTensor(disc_encoder.encode(sent1)[:200] + disc_encoder.encode(sent2)[1:201]).unsqueeze(0).to(device)
+        input_ = torch.LongTensor(truncation(disc_encoder.encode(sent1)[:200],disc_encoder) + truncation(disc_encoder.encode(sent2)[1:201],disc_encoder)).unsqueeze(0).to(device)
         output_ = np.log(F.softmax(model(input_)[0]).tolist()[0][1])
         score_.append(output_)
     return np.mean(score_)
