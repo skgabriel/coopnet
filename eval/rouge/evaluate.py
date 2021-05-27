@@ -18,7 +18,7 @@ except KeyError:
     print('Warning: ROUGE is not configured')
     _ROUGE_PATH = None
 def eval_rouge(dec_pattern, dec_dir, ref_pattern, ref_dir,
-               cmd='-c 85 -r 1000 -n 3 -m', system_id=1):
+               cmd='-c 95 -r 1000 -n 2 -m', system_id=1):
     """ evaluate by original Perl implementation"""
     # silence pyrouge logging
     assert _ROUGE_PATH is not None
